@@ -8,29 +8,32 @@ font xft:OpenSans 11
 
 ###MultiMedia Keys###
 
-# Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +15% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -15% #decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+# Pulse Audio / alsamixer
+exec --no-startup-id volumeicon
+bindsym $mod+Ctrl+m exec terminal -e 'alsamixer'
 
-#Monitor brightness
-#bindsym XF86MonBrightnessUp     exec light -k  -A 10
-#bindsym XF86MonBrightnessDown   exec light -k  -U 10
+#V olume Controls 
+set $refresh_i3status killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
-bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send 'brightness up'"
-bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness down'"
+# Screen brightness controls
+# bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send 'brightness up'"
+# bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness down'"
 
-#Keyboard brightness
-bindsym XF86KbdBrightnessUp     exec light -k -A 10
+# Keyboard brightness
+# bindsym XF86KbdBrightnessUp exec light -k -A 10
 
 #screenshot
-bindsym $mod+shift+p exec --no-startup-id i3-scrot '%Y-%m-%d-%s_screenshot_$wx$h.jpg' -e 'mv $f ~/Pictures/Screenshots/'
+bindsym $mod+shift+p exec --no-startup-id i3-scrot
 #bindsym Control+Print exec --no-startup-id xfce4-screenshooter
 #bindsym Control+Shift+Print exec --no-startup-id gnome-screenshot -i
 
 #toggle monitor
 
-bindsym $mod+m exec togglemoni
+#bindsym $mod+m exec togglemoni
 
 ###########################################################################################
 ################################## APPLICATION SHORTCUTS ##################################
@@ -55,34 +58,34 @@ bindsym $mod+Shift+v  exec codium
 bindsym $mod+Shift+d exec discord
 
 #start telegram
-#bindsym $mod+Shift+t exec telegram
+bindsym $mod+Shift+t exec telegram
 
 #start tor-browser
-bindsym $mod+Shift+t exec tor-browser
+#bindsym $mod+Shift+t exec tor-browser
 
 ###########################################################################################
 ################################ START APPLICATIONS AT LAUNCH #############################
 
-#wallpaper
-exec_always --no-startup-id feh --bg-scale ~/Desktop/starblack/Archive/Wallpapers/wallhaven-nmy7y1.png
+#feh wallpaper
+#exec_always --no-startup-id feh --bg-scale ~/Desktop/starblack/Archive/Wallpapers/wallhaven-ne55wn.jpg
 
 #polybar
-exec_always --no-startup-id /home/starblack/.config/polybar/launch.sh
+#exec_always --no-startup-id /home/starblack/.config/polybar/launch.sh
 
 #picom as compositor for transperancy
 #exec_always --no-startup-id picom 
-#Lockscreen 
-#exec --no-startup-id betterlockscreen -w dim blur
+
+#nitrogen as compositor alternative
+exec --no-startup-id nitrogen --restore; sleep 1; picom -b
 
 #launch ntfd for weather widget/data
 exec --no-startup-id ntfd &
 
-# xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
-# screen before suspend. Use loginctl lock-session to lock your screen.
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
-
 #XFCE POWER MANAGER
 exec --no-startup-id xfce4-power-manager
+
+#mullvad vpn
+exec --no-startup-id mullvad-vpn
 
 #Extra applets
 exec --no-startup-id xautolock -time 10 -locker blurlock
@@ -91,9 +94,8 @@ exec_always --no-startup-id fix_xcursor
 #exec --no-startup-id start_conky_maia
 exec --no-startup-id nm-applet
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-#exec --no-startup-id nitrogen --restore; sleep 1; picom -b
-
-
+exec --no-startup-id pamac-tray
+exec --no-startup-id clipit
 
 ###########################################################################################
 ###################################### MOVEMENT IN I3 #####################################
@@ -142,16 +144,17 @@ bindsym $mod+a focus parent
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
-set $ws1    1: I
-set $ws2    2: II 
-set $ws3    3: III 
-set $ws4    4: IV 
-set $ws5    5: V
-set $ws6    6: VI
-set $ws7    7: VII
-set $ws8    8: VIII
-set $ws9    9: IX
-set $ws10   10: X
+set $ws1 1
+set $ws2 2
+set $ws3 3
+set $ws4 4
+set $ws5 5
+set $ws6 6
+set $ws7 7
+set $ws8 8
+set $ws9 9
+set $ws10 10
+
 # switch to workspace
 bindsym $mod+1 workspace $ws1
 bindsym $mod+2 workspace $ws2
@@ -199,8 +202,8 @@ bindsym $mod+r mode "resize"
 ###################################### I3 GAPS ############################################
 #set window/container specifications
 
-for_window [class="^.*"] border pixel 2
-gaps inner 30
+for_window [class="^.*"] border pixel 0
+gaps inner 5
 gaps outer 0
 
 default_floating_border normal
@@ -208,7 +211,8 @@ default_floating_border normal
 # Hide borders
 hide_edge_borders none
 
-
+# smart gaps, only adds a gap if there is more than one container in the workspace
+smart_gaps on
 
 #Press $mod+Shift+g to enter the gap mode. Choose o or i for modifying outer/inner gaps. Press one of>
 set $mode_gaps Gaps: (o) outer, (i) inner
@@ -246,8 +250,6 @@ mode "$mode_gaps_outer" {
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
-
-
 
 #Open specific apps in floating mode
 
@@ -313,8 +315,6 @@ set_from_resource $term_color13    color13
 set_from_resource $term_color14    color14
 set_from_resource $term_color15    color15
 
-
-
 ###########################################################################################
 ############################### RESTARTING, RELOADING, EXITING ############################
 # reload the configuration file
@@ -326,10 +326,8 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
-#Lockscreen 1
-#bindsym $mod+shift+x exec betterlockscreen -l -w 
-
-#Lockscreen 2
+# Lock screen
+bindsym $mod+9 exec --no-startup-id blurlock
 
 #kill X
 bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
@@ -339,41 +337,46 @@ bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 
-#i3 status bar
+bar {
+	i3bar_command i3bar
+	status_command i3status
+	position bottom
 
-#bar {
-#        mode hide
-#	hidden_state hide
-#	modifier Mod4
-#	status_command i3status
-#	
-#}
+## please set your primary output first. Example: 'xrandr --output eDP1 --primary'
+#	tray_output primary
+#	tray_output eDP1
 
+	bindsym button4 nop
+	bindsym button5 nop
+#   font xft:URWGothic-Book 11
+	strip_workspace_numbers yes
 
-##########################################################################################
-############################## PLASMA COMPATABILITY ######################################
-# Plasma compatibility improvements
-#for_window [window_role="pop-up"] floating enable
-#for_window [window_role="task_dialog"] floating enable
+    colors {
+        background #222D31
+        statusline #F9FAF9
+        separator  #454947
 
-#for_window [class="yakuake"] floating enable
-#for_window [class="systemsettings"] floating enable
-#for_window [class="plasmashell"] floating enable;
-#for_window [class="Plasma"] floating enable; border none
-#for_window [title="plasma-desktop"] floating enable; border none
-#for_window [title="win7"] floating enable; border none
-#for_window [class="krunner"] floating enable; border none
-#for_window [class="Kmix"] floating enable; border none
-#for_window [class="Klipper"] floating enable; border none
-#for_window [class="Plasmoidviewer"] floating enable; border none
-#for_window [class="(?i)*nextcloud*"] floating disable
-#for_window [class="plasmashell" window_type="notification"] border none, move right 700px, move down 450px
-#no_focus [class="plasmashell" window_type="notification"]
+#                          border  backgr. text
+        focused_workspace  #F9FAF9 #16a085 #292F34
+        active_workspace   #595B5B #353836 #FDF6E3
+        inactive_workspace #595B5B #222D31 #EEE8D5
+        binding_mode       #16a085 #2C2C2C #F9FAF9
+        urgent_workspace   #16a085 #FDF6E3 #E5201D
+    }
+}
 
-#for_window [title="Desktop — Plasma"] kill; floating enable; border none
+# hide/unhide i3status bar
+bindsym $mod+m bar mode toggle
 
-#USE PLASMA LOGOUT SCREEN
-#bindsym $mod+Shift+e exec --no-startup-id qdbus org.kde.ksmserver /KSMServer org.kde.KSMServerInterface.logout -1 -1 -1
+# Theme colors
+# class                   border  backgr. text    indic.   child_border
+  client.focused          #556064 #556064 #80FFF9 #FDF6E3
+  client.focused_inactive #2F3D44 #2F3D44 #1ABC9C #454948
+  client.unfocused        #2F3D44 #2F3D44 #1ABC9C #454948
+  client.urgent           #CB4B16 #FDF6E3 #1ABC9C #268BD2
+  client.placeholder      #000000 #0c0c0c #ffffff #000000 
+
+  client.background       #2B2C2B
 
 ###########################################################################################
 ###################################### THE END ############################################

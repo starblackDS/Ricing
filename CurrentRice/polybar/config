@@ -53,12 +53,12 @@ module-margin-right = 2
 font-0 = "Opensans:pixelsize=12:weight=regular:size=0;2"
 font-1 = "Opensans:pixelsize=12:weight=bold:size=0;2"
 font-2 = "Weather Icons:size=12;0"
+font-3 = "Material Design:size=12;0"
 
 
-
-modules-left = date  
+modules-left = i3 date  
 modules-center = time
-modules-right = weather whoami
+modules-right = whoami
 
 separator =
 
@@ -113,8 +113,8 @@ pseudo-transparency = false
 
 [color]
 
-bg = #282828
-fg = #fbf1c7
+bg = #0D0D0D
+fg = #f5f5f5
 fg-alt = #070707
 
 alpha = #00000000
@@ -144,30 +144,38 @@ alpha = #00000000
 
 [module/i3]
 type = internal/i3
-pin-workspaces = false
-strip-wsnumbers = true
-index-sort = true
+format = <label-state> <label-mode>
+format-margin = 3
+index-sort = false
+
 enable-click = true
-enable-scroll = false
-wrapping-scroll = false
 reverse-scroll = false
 
-format = <label-state>
 
-label-occupied-padding = 2
-label-active-padding = 2
+label-focused = %index%
+label-focused-underline = ${color.fg}
+label-focused-padding = 4
+label-focused-font = 2
 
-label-active-foreground = ${color.fg}
-label-empty-foreground = ${color.fg}
-label-occupied-foreground = ${color.fg}
+label-unfocused = %index%
+label-unfocused-padding = 4
 
-label-active-underline = ${color.fg}
-label-occupied-underline = ${color.fg}
+label-urgent = !
+label-urgent-padding = 5
+label-urgent-underline = ${color.bg}
+label-urgent-font = 2
+
+ws-icon-0 = 1;
+ws-icon-1 = 2;
+ws-icon-2 = 3;ﭮ
+ws-icon-3 = 4;
+
+ws-icon-default = 
 
 [module/date]
 type = internal/date
 interval = 1.0
-time =   %{T2}%A%{T-}, %B %d
+time =  %{T2}%A%{T-}, %B %d
 format = <label>
 format-background = ${color.bg}
 format-foreground = ${color.fg}
@@ -178,12 +186,11 @@ label = %time%
 [module/time]
 type = internal/date
 interval = 1.0
-time = %{T2}%H:%M%{T-}
+time = %{T2}%H:%M%{T-}
 format = <label>
 format-background = ${color.bg}
 format-foreground = ${color.fg}
 format-padding = ${barsettings.padding}
-
 label = %time%
 
 ;[module/mpd]
@@ -210,7 +217,7 @@ format-padding = ${barsettings.padding}
 
 [module/whoami]
 type = custom/script
-exec = echo " %{T2}$(whoami)%{T-}@%{T2}$(hostname)%{T-}"
+exec = echo "%{T2}$(whoami)%{T-}@%{T2}$(hostname)%{T-}"
 interval = 9999999
 label-font = 2
 format-background = ${color.bg}

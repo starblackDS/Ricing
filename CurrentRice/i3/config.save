@@ -24,7 +24,7 @@ bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness 
 bindsym XF86KbdBrightnessUp     exec light -k -A 10
 
 #screenshot
-bindsym $mod+shift+p exec --no-startup-id i3-scrot '%Y-%m-%d-%s_screenshot_$wx$h.jpg' -e 'mv $f ~/Pictures/Screenshots/'
+bindsym $mod+shift+p exec --no-startup-id i3-scrot
 #bindsym Control+Print exec --no-startup-id xfce4-screenshooter
 #bindsym Control+Shift+Print exec --no-startup-id gnome-screenshot -i
 
@@ -64,13 +64,13 @@ bindsym $mod+Shift+t exec tor-browser
 ################################ START APPLICATIONS AT LAUNCH #############################
 
 #wallpaper
-exec_always --no-startup-id feh --bg-scale ~/Desktop/starblack/Archive/Wallpapers/wallhaven-nmy7y1.png
+exec_always --no-startup-id feh --bg-scale ~/Desktop/starblack/Archive/Wallpapers/wallhaven-ne55wn.jpg
 
 #polybar
 exec_always --no-startup-id /home/starblack/.config/polybar/launch.sh
 
 #picom as compositor for transperancy
-#exec_always --no-startup-id picom 
+exec_always --no-startup-id picom 
 #Lockscreen 
 #exec --no-startup-id betterlockscreen -w dim blur
 
@@ -83,6 +83,12 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 
 #XFCE POWER MANAGER
 exec --no-startup-id xfce4-power-manager
+
+#mullvad vpn
+exec --no-startup-id mullvad-vpn
+
+#nvidia settings menu
+exec --no-startup-id nvidia-settings
 
 #Extra applets
 exec --no-startup-id xautolock -time 10 -locker blurlock
@@ -142,16 +148,16 @@ bindsym $mod+a focus parent
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
-set $ws1    1: I
-set $ws2    2: II 
-set $ws3    3: III 
-set $ws4    4: IV 
-set $ws5    5: V
-set $ws6    6: VI
-set $ws7    7: VII
-set $ws8    8: VIII
-set $ws9    9: IX
-set $ws10   10: X
+set $ws1    1:I
+set $ws2    2:II 
+set $ws3    3:III 
+set $ws4    4:IV 
+set $ws5    5:V
+set $ws6    6:VI
+set $ws7    7:VII
+set $ws8    8:VIII
+set $ws9    9:IX
+set $ws10   10:X
 # switch to workspace
 bindsym $mod+1 workspace $ws1
 bindsym $mod+2 workspace $ws2
@@ -199,8 +205,8 @@ bindsym $mod+r mode "resize"
 ###################################### I3 GAPS ############################################
 #set window/container specifications
 
-for_window [class="^.*"] border pixel 2
-gaps inner 30
+for_window [class="^.*"] border pixel 0
+gaps inner 5
 gaps outer 0
 
 default_floating_border normal
@@ -352,6 +358,7 @@ bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 
 ##########################################################################################
 ############################## PLASMA COMPATABILITY ######################################
+
 # Plasma compatibility improvements
 #for_window [window_role="pop-up"] floating enable
 #for_window [window_role="task_dialog"] floating enable
